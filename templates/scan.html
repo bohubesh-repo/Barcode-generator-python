@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scan Barcode</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+    .container { max-width: 640px; margin: 24px auto; background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    #reader { width: 100%; }
+    input { width: 100%; margin: 10px 0; padding: 10px; box-sizing: border-box; }
+    button, .back { padding: 10px 14px; border: none; border-radius: 6px; background: #0a66c2; color: #fff; cursor: pointer; text-decoration: none; }
+    .back { background: #555; margin-left: 8px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+    .item { border: 1px solid #ddd; border-radius: 6px; padding: 8px; font-size: .9rem; }
+    #status { margin-top: 12px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>Scan Barcode</h1>
+    <p>Use mobile camera scanner or paste barcode manually.</p>
+
+    <div id="reader"></div>
+    <input id="manualBarcode" placeholder="Enter barcode manually" />
+    <button id="lookupBtn">Lookup</button>
+    <a class="back" href="{{ url_for('index') }}">Back</a>
+
+    <p id="status"></p>
+    <section id="result" class="grid"></section>
+  </main>
+
+  <script src="https://unpkg.com/html5-qrcode" defer></script>
+  <script src="{{ url_for('static', filename='scanner.js') }}" defer></script>
+</body>
+</html>

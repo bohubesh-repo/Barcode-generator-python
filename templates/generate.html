@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generate Barcode</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+    .container { max-width: 700px; margin: 24px auto; background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    h1 { margin: 0 0 16px; }
+    form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .full { grid-column: 1 / -1; }
+    input { width: 100%; padding: 10px; box-sizing: border-box; }
+    button, .back { padding: 10px 14px; border-radius: 6px; border: none; background: #0a66c2; color: #fff; cursor: pointer; text-decoration: none; display: inline-block; }
+    .back { background: #555; margin-left: 8px; }
+    table { width: 100%; margin-top: 18px; border-collapse: collapse; font-size: .92rem; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>Generate Barcode</h1>
+    <form method="post">
+      <input name="sku" placeholder="SKU" required />
+      <input name="raw_batch" placeholder="Raw Batch" required />
+      <input name="quantity" type="number" min="1" placeholder="Quantity" required />
+      <input name="category" placeholder="Category" required />
+      <input name="subcategory" placeholder="Subcategory" required />
+      <input name="model" placeholder="Model" required />
+      <input name="color" placeholder="Color" required />
+      <input name="size" placeholder="Size" required />
+      <div class="full">
+        <button type="submit">Generate</button>
+        <a class="back" href="{{ url_for('index') }}">Back</a>
+      </div>
+    </form>
+
+    {% if generated_rows %}
+      <table>
+        <thead>
+          <tr>
+            <th>Full Barcode</th>
+            <th>ENC Batch</th>
+            <th>Serial</th>
+            <th>Image</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in generated_rows %}
+            <tr>
+              <td>{{ row.FullBarcode }}</td>
+              <td>{{ row.ENC_BATCH }}</td>
+              <td>{{ row.Serial }}</td>
+              <td><a href="{{ url_for('static', filename='barcodes/' ~ row.FullBarcode ~ '.png') }}" target="_blank">PNG</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  </main>
+</body>
+</html>
