@@ -1,1 +1,1 @@
-FullBarcode,SKU,ENC_BATCH,Serial,RawBatch,ProductCode,Model,Color,Size
+FullBarcode,SKU,ENC_BATCH,Serial,RawBatch,Category,Subcategory,Model,Color,Size,Status
