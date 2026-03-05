@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generate Barcode</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; }
+    .container { max-width: 780px; margin: 24px auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .full { grid-column: 1 / -1; }
+    select, input, button, a { padding: 10px; border-radius: 6px; }
+    select, input { border: 1px solid #ccc; }
+    button { border: 0; background: #0a66c2; color: #fff; cursor: pointer; }
+    a.back { background: #555; color: #fff; text-decoration: none; display: inline-block; margin-left: 8px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: .92rem; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    .msg { margin-top: 12px; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>Generate Barcode</h1>
+    <form method="post">
+      <select name="product_code" required>
+        <option value="">Product Code</option>
+        {% for row in product_types %}
+          <option value="{{ row.ProductCode }}">{{ row.ProductCode }} - {{ row.Description }}</option>
+        {% endfor %}
+      </select>
+
+      <select name="model" required>
+        <option value="">Model</option>
+        {% for row in model_codes %}
+          <option value="{{ row.ModelCode }}">{{ row.ModelCode }}</option>
+        {% endfor %}
+      </select>
+
+      <select name="color" required>
+        <option value="">Color</option>
+        {% for row in color_codes %}
+          <option value="{{ row.ColorCode }}">{{ row.ColorCode }} - {{ row.ColorName }}</option>
+        {% endfor %}
+      </select>
+
+      <select name="size" required>
+        <option value="">Size</option>
+        {% for row in size_codes %}
+          <option value="{{ row.SizeCode }}">{{ row.SizeCode }} - {{ row.SizeName }}</option>
+        {% endfor %}
+      </select>
+
+      <input type="number" name="quantity" min="1" placeholder="Quantity" required />
+
+      <select id="manufacturer" class="full" required>
+        <option value="">Manufacturer Batch Source (Location | Shop | Date)</option>
+        {% for row in manufacturer_codes %}
+          <option value="{{ row.Location }}|{{ row.ShopName }}|{{ row.Date }}">{{ row.Location }} | {{ row.ShopName }} | {{ row.Date }}</option>
+        {% endfor %}
+      </select>
+
+      <input type="hidden" name="location" id="location" />
+      <input type="hidden" name="shop_name" id="shop_name" />
+      <input type="hidden" name="date_code" id="date_code" />
+
+      <div class="full">
+        <button type="submit">Generate</button>
+        <a class="back" href="{{ url_for('index') }}">Back</a>
+      </div>
+    </form>
+
+    {% if generated_rows %}
+      <p class="msg">Generated {{ generated_rows|length }} records. New rows inserted: {{ inserted_count }}.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Full Barcode</th>
+            <th>SKU</th>
+            <th>ENC_BATCH</th>
+            <th>Serial</th>
+            <th>PNG</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in generated_rows %}
+            <tr>
+              <td>{{ row.FullBarcode }}</td>
+              <td>{{ row.SKU }}</td>
+              <td>{{ row.ENC_BATCH }}</td>
+              <td>{{ row.Serial }}</td>
+              <td><a href="{{ url_for('static', filename='barcodes/' ~ row.FullBarcode ~ '.png') }}" target="_blank">Open</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  </main>
+
+  <script>
+    const manufacturer = document.getElementById('manufacturer');
+    const location = document.getElementById('location');
+    const shopName = document.getElementById('shop_name');
+    const dateCode = document.getElementById('date_code');
+
+    manufacturer.addEventListener('change', () => {
+      const [l, s, d] = manufacturer.value.split('|');
+      location.value = l || '';
+      shopName.value = s || '';
+      dateCode.value = d || '';
+    });
+  </script>
+</body>
+</html>
